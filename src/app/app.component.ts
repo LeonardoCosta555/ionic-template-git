@@ -10,19 +10,23 @@ import { ListPage } from '../pages/list/list';
   templateUrl: 'app.html'
 })
 export class MyApp {
+  firebaseauth: any;
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = HomePage;
+  rootPage: string = 'HomePage'; // ionic Page
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: string}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
-    this.initializeApp();
+  constructor(public platform: Platform,
+     public statusBar: StatusBar, 
+     public splashScreen: SplashScreen) {
+    
+     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage }
+      { title: 'Home', component: 'HomePage' },
+      { title: 'List', component: 'ListPage' }
     ];
 
   }
@@ -34,7 +38,21 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-  }
+    this.firebaseauth.authState
+    .subscribe(
+    user => {
+        if (user) {
+          this.rootPage = 'HomePage';
+        } else {
+          this.rootPage = 'LoginPage';
+        }
+      },
+      () => {
+        this.rootPage = 'HomePage';
+      }
+      );
+}
+  
 
   openPage(page) {
     // Reset the content nav to have just this page
